@@ -1,0 +1,4 @@
+(executable
+ (public_name tt_zoo)
+ (name main)
+ (libraries tt_zoo))
