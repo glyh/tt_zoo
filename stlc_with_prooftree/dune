@@ -1,0 +1,10 @@
+(executable
+ (name entry)
+
+ (public_name stlc_check_and_proof)
+
+ (libraries
+   stlc_with_proof_lib
+   batteries
+   prooftree))
+ 

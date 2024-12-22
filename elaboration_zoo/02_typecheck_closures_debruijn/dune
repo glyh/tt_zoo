@@ -1,0 +1,16 @@
+(menhir (modules menhir_parser))
+(ocamllex (modules lexer))
+
+(library
+ (name elaboration_zoo_typecheck_closures_debruijn)
+
+ (inline_tests)
+
+ (libraries
+   batteries
+   nice_parser
+   prooftree)
+
+   
+ 
+ (preprocess (pps ppx_inline_test ppx_deriving.show)))

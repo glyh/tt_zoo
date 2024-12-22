@@ -1,0 +1,13 @@
+(menhir (modules menhir_parser))
+(ocamllex (modules lexer))
+
+(library
+ (name elaboration_zoo_eval_HOAS_debruijn)
+
+ (inline_tests)
+
+ (libraries
+   batteries
+   nice_parser)
+ 
+ (preprocess (pps ppx_inline_test)))

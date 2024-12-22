@@ -1,0 +1,9 @@
+(library
+ (name prooftree)
+
+ (inline_tests)
+
+ (libraries
+   batteries)
+ 
+ (preprocess (pps ppx_inline_test)))

@@ -2,6 +2,8 @@
 
 (name tt_zoo)
 
+(using menhir 2.0)
+
 (generate_opam_files true)
 
 (source
@@ -11,7 +13,7 @@
 
 (maintainers "Yihang Liu")
 
-(license LICENSE)
+(license GPL-3.0-or-later)
 
 (documentation https://github.com/glyh/tt_zoo)
 
@@ -19,10 +21,15 @@
  (name tt_zoo)
  (synopsis "TT Zoo")
  (description "TT Zoo")
+ (allow_empty)
  (depends
    ocaml
    dune
-   (batteries (>= 3.8.0)))
+   menhir
+   (nice_parser (>= 1.0.0))
+   (batteries (>= 3.8.0))
+   (ppx_inline_test (>= v0.16.1))
+   (ppx_deriving (>= 6.0.3)))
  (tags
   (topics type_theory)))
 

@@ -4,7 +4,7 @@ synopsis: "TT Zoo"
 description: "TT Zoo"
 maintainer: ["Yihang Liu"]
 authors: ["Yihang Liu"]
-license: "LICENSE"
+license: "GPL-3.0-or-later"
 tags: ["topics" "type_theory"]
 homepage: "https://github.com/glyh/tt_zoo"
 doc: "https://github.com/glyh/tt_zoo"
@@ -12,7 +12,11 @@ bug-reports: "https://github.com/glyh/tt_zoo/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.15"}
+  "menhir"
+  "nice_parser" {>= "1.0.0"}
   "batteries" {>= "3.8.0"}
+  "ppx_inline_test" {>= "v0.16.1"}
+  "ppx_deriving" {>= "6.0.3"}
   "odoc" {with-doc}
 ]
 build: [

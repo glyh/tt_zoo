@@ -1,5 +1,0 @@
-(library
- (name elaboration_zoo)
-
- (libraries
-   batteries))

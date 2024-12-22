@@ -1,0 +1,1 @@
+(λn:Int.if n == 0 then true else false) 1
