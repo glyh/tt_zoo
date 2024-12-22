@@ -12,7 +12,7 @@ let write_proof_as_typst (sink : out_channel) (proof : proof) =
     match (rule_name, premices) with
     | None, [] -> output conclusion
     | Some rule_name, premices ->
-        output (Printf.sprintf "%srule(\n" (output_indent indent));
+        "rule(\n" |> output;
         output
           (Printf.sprintf "%sname: %s,\n"
              (output_indent (indent + 2))
@@ -21,23 +21,25 @@ let write_proof_as_typst (sink : out_channel) (proof : proof) =
           (Printf.sprintf "%s%s,\n" (output_indent (indent + 2)) conclusion);
         List.iter
           (fun premice ->
+            output_indent (indent + 2) |> output;
             write_proof_helper (indent + 2) premice;
-            output ",\n")
+            ",\n" |> output)
           premices;
 
         output (Printf.sprintf "%s)" (output_indent indent))
     | None, premices ->
-        output (Printf.sprintf "%srule(\n" (output_indent indent));
+        "rule(\n" |> output;
         output
           (Printf.sprintf "%s%s,\n" (output_indent (indent + 2)) conclusion);
         List.iter
           (fun premice ->
+            output_indent (indent + 2) |> output;
             write_proof_helper (indent + 2) premice;
             output ",\n")
           premices;
 
         output (Printf.sprintf "%s)" (output_indent indent))
   in
-
+  output "  ";
   write_proof_helper 2 proof;
   output "\n)"

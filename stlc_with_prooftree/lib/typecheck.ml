@@ -69,10 +69,11 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
       | _ -> raise (ExpectFunctionGot f_ty))
   | Abs (param, param_ty, body) ->
       let body_ty, body_proof = infer (BatMap.add param param_ty ctx) body in
-      ( TArrow (param_ty, body_ty),
+      let func_ty = TArrow (param_ty, body_ty) in
+      ( func_ty,
         {
           premices = [ body_proof ];
-          conclusion = Printf.sprintf "%s" (type_statement ctx ast body_ty);
+          conclusion = Printf.sprintf "%s" (type_statement ctx ast func_ty);
           rule_name = Some {|"INFER-ABS"|};
         } )
   | If (cond, then_branch, else_branch) ->
