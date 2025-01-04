@@ -31,7 +31,7 @@ let state_ast ast =
     if child_level < parent_level then Printf.sprintf "(%s)" repr else repr
   in
   let fix_repr_le child_level parent_level repr =
-    if child_level < parent_level then Printf.sprintf "(%s)" repr else repr
+    if child_level <= parent_level then Printf.sprintf "(%s)" repr else repr
   in
   let rec go ast =
     match ast with

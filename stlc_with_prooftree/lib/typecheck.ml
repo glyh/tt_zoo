@@ -19,8 +19,7 @@ let rec check (ctx : ctx) (ast : ast) (ty_to_check : stlc_type) : proof =
           let body_proof = check (BatMap.add param param_ty ctx) body output in
           {
             premices = [ body_proof ];
-            conclusion =
-              Printf.sprintf "%s" (type_statement ctx ast ty_to_check);
+            conclusion = type_statement ctx ast ty_to_check;
             rule_name = Some {|"CHECK-LAM"|};
           }
       | TArrow (input, _) -> raise (TypeMismatch (input, param_ty))
@@ -31,7 +30,7 @@ let rec check (ctx : ctx) (ast : ast) (ty_to_check : stlc_type) : proof =
       let else_proof = check ctx else_branch ty_to_check in
       {
         premices = [ cond_proof; then_proof; else_proof ];
-        conclusion = Printf.sprintf "%s" (type_statement ctx ast ty_to_check);
+        conclusion = type_statement ctx ast ty_to_check;
         rule_name = Some {|"CHECK-IF"|};
       }
 
@@ -44,7 +43,7 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
           ( ty,
             {
               premices = [];
-              conclusion = Printf.sprintf "%s" (type_statement ctx ast ty);
+              conclusion = type_statement ctx ast ty;
               rule_name = None;
             } ))
   | Atom a ->
@@ -52,7 +51,7 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
       ( ty,
         {
           premices = [];
-          conclusion = Printf.sprintf "%s" (type_statement BatMap.empty ast ty);
+          conclusion = type_statement BatMap.empty ast ty;
           rule_name = None;
         } )
   | App (f, x) -> (
@@ -63,7 +62,7 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
           ( output,
             {
               premices = [ f_proof; x_proof ];
-              conclusion = Printf.sprintf "%s" (type_statement ctx ast output);
+              conclusion = type_statement ctx ast output;
               rule_name = Some {|"INFER-APP"|};
             } )
       | _ -> raise (ExpectFunctionGot f_ty))
@@ -73,7 +72,7 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
       ( func_ty,
         {
           premices = [ body_proof ];
-          conclusion = Printf.sprintf "%s" (type_statement ctx ast func_ty);
+          conclusion = type_statement ctx ast func_ty;
           rule_name = Some {|"INFER-ABS"|};
         } )
   | If (cond, then_branch, else_branch) ->
@@ -84,7 +83,7 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
         ( then_ty,
           {
             premices = [ cond_proof; then_proof; else_proof ];
-            conclusion = Printf.sprintf "%s" (type_statement ctx ast then_ty);
+            conclusion = type_statement ctx ast then_ty;
             rule_name = Some {|"INFER-IF"|};
           } )
       else raise (TypeMismatch (then_ty, else_ty))
@@ -95,7 +94,7 @@ and infer (ctx : ctx) (ast : ast) : stlc_type * proof =
         ( TBool,
           {
             premices = [ lhs_proof; rhs_proof ];
-            conclusion = Printf.sprintf "%s" (type_statement ctx ast TBool);
+            conclusion = type_statement ctx ast TBool;
             rule_name = Some {|"INFER-REL"|};
           } )
       else raise (TypeMismatch (lhs_ty, rhs_ty))

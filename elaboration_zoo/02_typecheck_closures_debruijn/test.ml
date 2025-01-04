@@ -15,7 +15,7 @@ let%test "id" =
   |}
   in
   let parsed = Parser.parse_string to_parse in
-  let term, type_inferred = infer empty_ctx parsed in
+  let term, type_inferred, _ = infer empty_ctx parsed in
   let evaled = eval [] term in
   type_inferred
   = VPi
@@ -29,42 +29,47 @@ let%test "id" =
                   Closure
                     ( [
                         (* id = \A x. x *)
-                        VLam ("A", Closure ([], Lam ("x", Var 0)));
+                        VLam ("A", Closure ([], Lam ("x", Var ~@0)));
                       ],
-                      Lam ("B", Lam ("x", Lam ("y", Var 1))) ) );
+                      Lam ("B", Lam ("x", Lam ("y", Var ~@1))) ) );
               (* id = \A x. x *)
-              VLam ("A", Closure ([], Lam ("x", Var 0)));
+              VLam ("A", Closure ([], Lam ("x", Var ~@0)));
             ],
-            Pi ("B", U, Pi ("_", Var 1, Pi ("_", Var 1, Var 3))) ) )
+            Pi ("B", U, Pi ("_", Var ~@1, Pi ("_", Var ~@1, Var ~@3))) ) )
   && evaled
      = VLam
          ( "A",
            Closure
-             ( [ VLam ("A", Closure ([], Lam ("x", Var 0))) ],
-               Lam ("B", Lam ("x", Lam ("y", Var 1))) ) )
+             ( [ VLam ("A", Closure ([], Lam ("x", Var ~@0))) ],
+               Lam ("B", Lam ("x", Lam ("y", Var ~@1))) ) )
 
-(*let%test "generate 1000" =*)
-(*  Parser.pp_exceptions ();*)
-(*  let normalized =*)
-(*    Parser.parse_string*)
-(* {|*)
-   (*  let λ λ 1 (1 (1 (1 (1 0))));    -- five = λ s z. s (s (s (s (s z))))*)
-   (*  let λ λ λ λ 3 1 (2 1 0);        -- add  = λ a b s z. a s (b s z)*)
-   (*  let λ λ λ λ 3 (2 1) 0;          -- mul  = λ a b s z. a (b s) z*)
-   (*  let 1 2 2;                      -- ten  = add five five*)
-   (*  let 1 0 0;                      -- hundred = mul ten ten*)
-   (*  let 2 1 0;                      -- thousand = mul ten hundred*)
-   (*  0                               -- thousand*)
-   (*|}*)
-(*    |> Normalize.nf []*)
-(*  in*)
-(*  match normalized with*)
-(*  | Lam (Lam inner) ->*)
-(*      let rec count_layer term =*)
-(*        match term with*)
-(*        | Var 0 -> 0*)
-(*        | App (Var 1, rest) -> 1 + count_layer rest*)
-(*        | _ -> raise NotNumRep*)
-(*      in*)
-(*      1000 = count_layer inner*)
-(*  | _ -> false*)
+let%test "generate 1000" =
+  Parser.pp_exceptions ();
+  let to_parse =
+    {|
+let Nat  : U = (N : U) -> (N -> N) -> N -> N;
+let five : Nat = \N s z. s (s (s (s (s z))));
+let add  : Nat -> Nat -> Nat = \a b N s z. a N s (b N s z);
+let mul  : Nat -> Nat -> Nat = \a b N s z. a N (b N s) z;
+
+let ten      : Nat = add five five;
+let hundred  : Nat = mul ten ten;
+let thousand : Nat = mul ten hundred;
+
+thousand
+  |}
+  in
+  let parsed = Parser.parse_string to_parse in
+  let term, _, _ = infer empty_ctx parsed in
+  let normalized = nf [] term in
+  let rec count n =
+    match n with
+    | Var (Index 0) -> 0
+    | App (Var (Index 1), rest) -> 1 + count rest
+    | x ->
+        Printf.printf "::%s::" (show_term x);
+        raise NotNumRep
+  in
+  match normalized with
+  | Lam ("N", Lam ("s", Lam ("z", inner))) -> 1000 = count inner
+  | _ -> raise NotNumRep
