@@ -1,6 +1,6 @@
 %{
   [@@@coverage exclued_file]
-  open Ast
+  open Data_type
 %}
 
 %token EOF
@@ -9,7 +9,7 @@
 
 %token LPAREN RPAREN LBKT RBKT
 
-%token COLON SEMICOL FSLASH ARROW DOT EQ
+%token COLON SEMICOL FSLASH ARROW DOT EQ HOLE
 %right ARROW
 
 %token LET U
@@ -51,5 +51,6 @@ expression_app:
 
 expression_atom:
   | U { RU }
+  | HOLE { RHole }
   | var=IDENT { RVar(var) }
   | LPAREN e=expression RPAREN { e }

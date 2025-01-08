@@ -31,6 +31,7 @@ rule next_token = parse
   | "=" { EQ }
   | "U" { U }
   | "let" { LET }
+  | "_" { HOLE }
   | id { IDENT (Lexing.lexeme lexbuf) }
   | newline { Lexing.new_line lexbuf; next_token lexbuf }
   | WS* { next_token lexbuf }

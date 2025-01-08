@@ -7,11 +7,11 @@ let%test "id" =
   Parser.pp_exceptions ();
   let to_parse =
     {|
-  let id: (A : U) -> A -> A
+  let id: [A : U] -> A -> A
     = \A x. x;
-  let const: (A B : U) -> A -> B -> A
+  let const: [A B : U] -> A -> B -> A
     = \A B x y. x;
-  id ((A B : U) -> A -> B -> A) const
+  id ([A B : U] -> A -> B -> A) const
   |}
   in
   let parsed = Parser.parse_string to_parse in
@@ -47,7 +47,7 @@ let%test "generate 1000" =
   Parser.pp_exceptions ();
   let to_parse =
     {|
-let Nat  : U = (N : U) -> (N -> N) -> N -> N;
+let Nat  : U = [N : U] -> (N -> N) -> N -> N;
 let five : Nat = \N s z. s (s (s (s (s z))));
 let add  : Nat -> Nat -> Nat = \a b N s z. a N s (b N s z);
 let mul  : Nat -> Nat -> Nat = \a b N s z. a N (b N s) z;
